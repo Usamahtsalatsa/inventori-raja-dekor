@@ -1,3 +1,4 @@
 <?php
-header('Location: api/login.php');
-exit;
+header("Location: /api/login.php");
+exit();
+?>
