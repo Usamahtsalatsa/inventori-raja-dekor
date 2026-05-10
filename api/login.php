@@ -3,7 +3,7 @@ session_start();
 include 'koneksi.php';
 
 if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-    header("Location: dashboard.php");
+    header("Location: /api/dashboard.php");
     exit();
 }
 
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
         $_SESSION['level'] = $user['level'];
         catatLog($koneksi, 'Login', "User {$user['username']} berhasil login");
-        header("Location: dashboard.php");
+        header("Location: /api/dashboard.php");
         exit();
     } else {
         $error = "Username atau password salah!";

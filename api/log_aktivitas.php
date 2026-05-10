@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['login']) || $_SESSION['login'] != true) {
-    header("Location: login.php");
+    header("Location: /api/login.php");
     exit();
 }
 include 'koneksi.php';
@@ -20,7 +20,7 @@ if ($is_admin && isset($_POST['delete_all'])) {
         $_SESSION['message'] = "Gagal menghapus log.";
         $_SESSION['msg_type'] = "danger";
     }
-    header("Location: log_aktivitas.php");
+    header("Location: /api/log_aktivitas.php");
     exit();
 }
 
@@ -42,7 +42,7 @@ if ($is_admin && isset($_POST['delete_selected']) && isset($_POST['selected_logs
         $_SESSION['message'] = "Tidak ada log yang dipilih.";
         $_SESSION['msg_type'] = "warning";
     }
-    header("Location: log_aktivitas.php");
+    header("Location: /api/log_aktivitas.php");
     exit();
 }
 

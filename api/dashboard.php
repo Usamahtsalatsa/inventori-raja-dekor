@@ -3,7 +3,7 @@ session_start();
 include 'koneksi.php';
 
 if (!isset($_SESSION['login']) || $_SESSION['login'] != true) {
-    header("Location: login.php");
+    header("Location: /api/login.php");
     exit();
 }
 
