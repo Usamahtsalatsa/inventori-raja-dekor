@@ -10,19 +10,37 @@ function catatLog($koneksi, $aksi, $detail = '') {
     mysqli_query($koneksi, $query);
 }
 
-// Cek apakah di lingkungan production (Vercel / Railway)
-if (getenv('VERCEL') || getenv('RAILWAY_ENVIRONMENT') || getenv('DATABASE_URL')) {
+// Fungsi bantu untuk mengambil env var dengan aman
+function getEnvVar($key) {
+    if (getenv($key)) return getenv($key);
+    if (isset($_ENV[$key])) return $_ENV[$key];
+    if (isset($_SERVER[$key])) return $_SERVER[$key];
+    return false;
+}
+
+$db_url = getEnvVar('DATABASE_URL') ?: getEnvVar('MYSQL_URL');
+
+// Cek apakah di lingkungan production (Vercel / Railway) atau ada db_url
+if ($db_url || getEnvVar('VERCEL') || getEnvVar('RAILWAY_ENVIRONMENT')) {
     // Mode PRODUCTION (online)
-    $db_url = getenv('DATABASE_URL');
     
-    // Parse URL database dari Railway
-    $parsed = parse_url($db_url);
-    
-    $host = $parsed['host'];
-    $user = $parsed['user'];
-    $password = $parsed['pass'];
-    $database = ltrim($parsed['path'], '/');
-    $port = $parsed['port'] ?? 3306;
+    if ($db_url) {
+        // Parse URL database dari Railway
+        $parsed = parse_url($db_url);
+        
+        $host = isset($parsed['host']) ? $parsed['host'] : 'localhost';
+        $user = isset($parsed['user']) ? $parsed['user'] : 'root';
+        $password = isset($parsed['pass']) ? $parsed['pass'] : '';
+        $database = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
+        $port = isset($parsed['port']) ? $parsed['port'] : 3306;
+    } else {
+        // Fallback manual jika format URL tidak digunakan
+        $host = getEnvVar('DB_HOST') ?: 'localhost';
+        $user = getEnvVar('DB_USER') ?: 'root';
+        $password = getEnvVar('DB_PASS') ?: '';
+        $database = getEnvVar('DB_NAME') ?: '';
+        $port = getEnvVar('DB_PORT') ?: 3306;
+    }
 } else {
     // Mode LOCAL (XAMPP)
     $host = "localhost";
